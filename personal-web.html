@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roman Thapa - Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f1115;
+      color: #fff;
+      transition: background 0.4s, color 0.4s;
+    }
+
+    /* Light Mode */
+    body.light-mode {
+      background: #fdfdfd;
+      color: #222;
+    }
+    body.light-mode header {
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+    }
+    body.light-mode nav ul li a { color: #333; }
+    body.light-mode nav ul li a:hover,
+    body.light-mode nav ul li a.active { color: #32cd32; }
+    body.light-mode #about, 
+    body.light-mode #services, 
+    body.light-mode #portfolio, 
+    body.light-mode #contact {
+      background: #f0f0f0;
+    }
+    body.light-mode .about-text { color: #222; }
+    body.light-mode .contact-info { color: #000; } /* Light mode Gmail black */
+
+    /* Navbar */
+    header {
+      width: 100%;
+      padding: 20px 8%;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: #0f1115;
+      z-index: 1000;
+      border-bottom: 1px solid #222;
+      transition: background 0.4s;
+    }
+    nav ul { list-style: none; display: flex; gap: 30px; }
+    nav ul li a { color: #bbb; text-decoration: none; font-weight: 500; transition: 0.3s; }
+    nav ul li a:hover, nav ul li a.active { color: #32cd32; }
+
+    /* Dark/Light Toggle */
+    .toggle-container {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .toggle-btn {
+      width: 40px;
+      height: 20px;
+      background: #444;
+      border-radius: 20px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .toggle-btn::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.3s;
+    }
+    body.light-mode .toggle-btn { background: #bbb; }
+    body.light-mode .toggle-btn::after { transform: translateX(20px); }
+
+    /* Hero Section */
+    .hero { height: 100vh; display: flex; align-items: center; justify-content: space-between; padding: 0 8%; gap: 50px; }
+    .hero-text { max-width: 600px; }
+    .hero-text h1 { font-size: 42px; font-weight: 700; margin-bottom: 5px; }
+    .hero-text h1 span { color: #32cd32; }
+    .hero-text h2.small-fade { font-size: 20px; color: #bbb; font-weight: 400; margin-bottom: 15px; }
+    .hero-text h2 { font-size: 24px; margin-bottom: 20px; font-weight: 500; }
+    .typed-text { color: #32cd32; font-weight: bold; }
+    .slogan { font-family: "Times New Roman", serif; font-size: 20px; color: red; font-style: italic; margin-bottom: 25px; text-shadow: 0 0 8px rgba(255,0,0,0.4); }
+    .btn { display: inline-block; padding: 12px 28px; background: #32cd32; color: #fff; font-weight: bold; border-radius: 30px; text-decoration: none; transition: 0.3s; }
+    .btn:hover { background: #28a428; }
+
+    /* Profile Image */
+    .hero-img { position: relative; width: 300px; height: 300px; display: flex; align-items: center; justify-content: center; }
+    .hero-img::before { content: ""; position: absolute; width: 320px; height: 320px; border-radius: 50%; background: conic-gradient(#32cd32, transparent 60%); animation: rotate 6s linear infinite; z-index: 0; }
+    .hero-img img { width: 260px; height: 260px; border-radius: 50%; border: 4px solid #0f1115; position: relative; z-index: 1; box-shadow: 0 0 25px rgba(50,205,50,0.5); object-fit: cover; }
+    @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Sections */
+    section { padding: 100px 8%; min-height: 100vh; scroll-margin-top: 100px; transition: background 0.4s, color 0.4s; }
+    #about, #services, #portfolio, #contact { background: #181a1f; margin-top: 40px; border-radius: 10px; padding: 50px; }
+    section h2 { font-size: 38px; margin-bottom: 20px; color: #32cd32; text-transform: uppercase; }
+
+    /* About Section */
+    .highlight-box { display: inline-block; background: transparent; color: red; font-weight: bold; padding: 2px 6px; border-radius: 5px; }
+    .about-container { display: flex; flex-wrap: wrap; gap: 30px; align-items: flex-start; }
+    .about-text { flex: 1 1 400px; font-size: 18px; line-height: 1.8; font-weight: bold; color: #eee; opacity: 0; transform: translateY(30px); transition: opacity 1s ease, transform 1s ease; }
+    .about-text.visible { opacity: 1; transform: translateY(0); }
+
+    .about-pics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; flex: 1 1 300px; }
+    .pic-frame { border: 3px solid #00ffff; border-radius: 12px; overflow: hidden; box-shadow: 0 0 15px rgba(0,255,255,0.5); transition: transform 0.3s, box-shadow 0.3s, opacity 1s ease, transform 1s ease; opacity: 0; transform: translateY(30px); max-height: 180px; }
+    .pic-frame.visible { opacity: 1; transform: translateY(0); }
+    .pic-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .pic-frame:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0,255,255,0.8); }
+
+    /* Services & Portfolio */
+    #services p, #portfolio p { font-size: 20px; font-weight: bold; color: #ddd; line-height: 1.8; }
+
+    /* Contact */
+    #contact p { font-size: 20px; margin-bottom: 10px; }
+    .contact-info {
+      font-size: 22px;
+      margin-top: 15px;
+      cursor: pointer;
+      color: #32cd32; /* Dark mode green */
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.3s;
+    }
+    .contact-info:hover { text-decoration: underline; }
+
+    /* Modal */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 2000; }
+    .modal-content { background: #222; padding: 30px; border-radius: 10px; width: 400px; max-width: 90%; color: #fff; }
+    .modal-content h3 { margin-bottom: 15px; }
+    .modal-content input, .modal-content textarea { width: 100%; padding: 10px; margin-bottom: 15px; border: none; border-radius: 6px; }
+    .modal-content button { padding: 10px 20px; background: #32cd32; border: none; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer; }
+    .close { float: right; font-size: 22px; cursor: pointer; }
+
+    /* Scroll to Top Button */
+    #scrollTopBtn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 35px;
+      height: 35px;
+      background: #32cd32;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 1500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    #scrollTopBtn.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <!-- Toggle Switch -->
+    <div class="toggle-container">
+      <div class="toggle-btn" id="toggleTheme"></div>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#home" class="active">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#services">Service</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <div class="hero-text">
+      <h1>Hello, I'm <span>Roman Thapa</span></h1>
+      <h2 class="small-fade">Aspiring Software Developer | BCA IT Student</h2>
+      <h2>I'm a <span class="typed-text"></span></h2>
+      <p class="slogan">“Transforming ideas into code, and code into meaningful experiences.”</p>
+      <a href="#about" class="btn">More About Me</a>
+    </div>
+    <div class="hero-img">
+      <img src="profile.jpg" alt="Roman Thapa">
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <h2>About Me</h2>
+    <div class="about-container">
+      <div class="about-text">
+        <p>Hi, I’m <span class="highlight-box">Roman Thapa</span>, a passionate and enthusiastic learner currently pursuing <span class="highlight-box">BCA-IT</span> at <span class="highlight-box">Gomendra Multiple College</span>, Birtamode, Jhapa. I have a deep interest in technology, problem-solving, and building meaningful solutions that can make a difference. Beyond academics, I love writing <span class="highlight-box">poems and ghazals</span>, which allow me to capture emotions and perspectives in unique ways. I’m also someone who enjoys sports, fitness, and outdoor exploration, as they help me stay active, disciplined, and connected to nature. A huge <span class="highlight-box">Cristiano Ronaldo</span> fan and a dedicated <span class="highlight-box">Real Madrid</span> supporter, I believe in hard work. I see myself as a curious learner, always eager to explore new things, concepts, and ideas. I love collaborating with others, and enjoy taking on challenges that push me to grow. When I’m not coding or studying, you’ll probably find me writing, reading, traveling, or engaging in meaningful conversations that broaden my perspective.</p>
+      </div>
+      <div class="about-pics">
+        <div class="pic-frame"><img src="photo1.jpg" alt="Roman Thapa"></div>
+        <div class="pic-frame"><img src="photo2.jpg" alt="Roman Thapa"></div>
+        <div class="pic-frame"><img src="photo3.jpg" alt="Roman Thapa"></div>
+        <div class="pic-frame"><img src="photo4.jpg" alt="Roman Thapa"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section id="services">
+    <h2>Services</h2>
+    <p>⚠️ Currently not providing professional services.</p>
+  </section>
+
+  <!-- Portfolio -->
+  <section id="portfolio">
+    <h2>Portfolio</h2>
+    <p>📂 Showcase of my projects is coming soon... Stay tuned!</p>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <h2>Contact Me</h2>
+    <p>📩 Wanna reach me? Click below:</p>
+    <div class="contact-info" id="openModal">
+      <i class="fa-solid fa-envelope"></i> Gmail
+    </div>
+  </section>
+
+  <!-- Scroll To Top Button -->
+  <div id="scrollTopBtn"><i class="fa-solid fa-arrow-up"></i></div>
+
+  <!-- Modal -->
+  <div class="modal" id="contactModal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <h3>Contact Form</h3>
+      <input type="text" id="name" placeholder="Your Name" required>
+      <input type="email" id="email" placeholder="Your Email" required>
+      <textarea id="reason" rows="4" placeholder="Reason for Contact" required></textarea>
+      <button id="submitBtn">Submit</button>
+    </div>
+  </div>
+
+  <script>
+    // Typed.js
+    new Typed(".typed-text", {
+      strings: ["Frontend Developer", "Web Designer", "Freelancer"],
+      typeSpeed: 80,
+      backSpeed: 50,
+      backDelay: 1500,
+      loop: true
+    });
+
+    // Active Menu Link Highlight
+    const navLinks = document.querySelectorAll("nav ul li a");
+    const sections = document.querySelectorAll("section");
+
+    window.addEventListener("scroll", () => {
+      let current = "";
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        if (scrollY >= sectionTop) current = section.getAttribute("id");
+      });
+      navLinks.forEach(link => {
+        link.classList.remove("active");
+        if(link.getAttribute("href") === "#" + current) link.classList.add("active");
+      });
+    });
+
+    // Fade In Animation
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if(entry.isIntersecting) { entry.target.classList.add('visible'); } });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.about-text, .pic-frame').forEach(el => observer.observe(el));
+
+    // Modal
+    const modal = document.getElementById("contactModal");
+    const openModal = document.getElementById("openModal");
+    const closeModal = document.getElementById("closeModal");
+    const submitBtn = document.getElementById("submitBtn");
+
+    openModal.addEventListener("click", () => { modal.style.display = "flex"; });
+    closeModal.addEventListener("click", () => { modal.style.display = "none"; });
+    window.addEventListener("click", (e) => { if(e.target === modal) modal.style.display = "none"; });
+
+    submitBtn.addEventListener("click", () => {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const reason = document.getElementById("reason").value;
+      if(name && email && reason) {
+        window.location.href = `mailto:connect.romanthapa@gmail.com?subject=Contact from ${name}&body=Email: ${email}%0D%0AReason: ${reason}`;
+        modal.style.display = "none";
+      } else { alert("Please fill all fields before submitting."); }
+    });
+
+    // Theme Toggle
+    const toggleTheme = document.getElementById("toggleTheme");
+    toggleTheme.addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+    });
+
+    // Scroll to Top Button
+    const scrollTopBtn = document.getElementById("scrollTopBtn");
+    window.addEventListener("scroll", () => {
+      if(window.scrollY > 300) {
+        scrollTopBtn.classList.add("show");
+      } else {
+        scrollTopBtn.classList.remove("show");
+      }
+    });
+    scrollTopBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  </script>
+
+</body>
+</html>
